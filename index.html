@@ -3,14 +3,1223 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>POV</title>
+    <title>POV – Reframe 4:3 video for any screen</title>
+    <meta
+      name="description"
+      content="POV is a phone app that turns 4:3 video into 16:9 landscape or 9:16 portrait by keeping the middle of the shot natural and reshaping the edges, instead of just cropping or stretching. Everything runs on your device."
+    />
+    <meta
+      name="theme-color"
+      content="#ffffff"
+      media="(prefers-color-scheme: light)"
+    />
+    <meta
+      name="theme-color"
+      content="#000000"
+      media="(prefers-color-scheme: dark)"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --blue: #007aff;
+        --bg: #ffffff;
+        --grouped: #f2f2f7;
+        --ink: #000000;
+        --ink-2: #5b5b61;
+        --separator: rgba(60, 60, 67, 0.18);
+        --track: rgba(118, 118, 128, 0.14);
+        --thumb: #ffffff;
+        --thumb-shadow:
+          0 3px 8px rgba(0, 0, 0, 0.12), 0 3px 1px rgba(0, 0, 0, 0.04);
+
+        --sky-top: #b9d8ff;
+        --sky-bottom: #eef5ff;
+        --sea: #6fa8f2;
+        --sand: #efe9dd;
+        --figure: #1c1c1e;
+        --dim: rgba(0, 0, 0, 0.52);
+
+        --bar: rgba(255, 255, 255, 0.78);
+        --font:
+          "Archivo", -apple-system, BlinkMacSystemFont, "Helvetica Neue",
+          sans-serif;
+        --measure: 34rem;
+        --gutter: clamp(16px, 4vw, 48px);
+        --max: 1200px;
+        color-scheme: light dark;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --blue: #0a84ff;
+          --bg: #000000;
+          --grouped: #000000;
+          --ink: #ffffff;
+          --ink-2: #a1a1a8;
+          --separator: rgba(84, 84, 88, 0.6);
+          --track: rgba(118, 118, 128, 0.24);
+          --thumb: #636366;
+          --thumb-shadow: none;
+          --bar: rgba(0, 0, 0, 0.72);
+
+          --sky-top: #0b2a55;
+          --sky-bottom: #1f5596;
+          --sea: #123b70;
+          --sand: #3a362f;
+          --figure: #f2f2f7;
+          --dim: rgba(0, 0, 0, 0.6);
+        }
+        .band {
+          background: #1c1c1e;
+        }
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+        scroll-padding-top: 72px;
+        -webkit-text-size-adjust: 100%;
+      }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: var(--font);
+        font-size: 1.125rem;
+        line-height: 1.5;
+        font-variation-settings: "wdth" 100;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      a {
+        color: inherit;
+      }
+
+      :focus-visible {
+        outline: 3px solid var(--blue);
+        outline-offset: 3px;
+        border-radius: 6px;
+      }
+
+      .wrap {
+        width: 100%;
+        max-width: var(--max);
+        margin: 0 auto;
+        padding: 0 var(--gutter);
+      }
+
+      .visually-hidden {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        white-space: nowrap;
+      }
+
+      /* Header */
+
+      .site-header {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background: var(--bar);
+        -webkit-backdrop-filter: saturate(180%) blur(20px);
+        backdrop-filter: saturate(180%) blur(20px);
+        border-bottom: 1px solid transparent;
+        transition: border-color 0.2s ease;
+      }
+
+      .site-header[data-scrolled] {
+        border-bottom-color: var(--separator);
+      }
+
+      .site-header .wrap {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding-top: 12px;
+        padding-bottom: 12px;
+      }
+
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+        font-weight: 800;
+        font-size: 1.3125rem;
+        font-variation-settings: "wdth" 125;
+        letter-spacing: 0.01em;
+      }
+
+      .brand svg {
+        width: 34px;
+        height: 34px;
+        flex: none;
+      }
+
+      .site-nav {
+        display: flex;
+        align-items: center;
+        gap: 24px;
+        font-size: 1rem;
+      }
+
+      .site-nav a:not(.button) {
+        text-decoration: none;
+        color: var(--ink-2);
+      }
+
+      .site-nav a:not(.button):hover {
+        color: var(--ink);
+      }
+
+      .button {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        min-height: 44px;
+        padding: 0 20px;
+        border-radius: 999px;
+        background: var(--blue);
+        color: #fff;
+        font-weight: 600;
+        font-size: 1.1875rem;
+        text-decoration: none;
+        white-space: nowrap;
+        transition: filter 0.15s ease;
+      }
+
+      .button:hover {
+        filter: brightness(1.08);
+      }
+
+      .button:active {
+        filter: brightness(0.92);
+      }
+
+      .button--small {
+        min-height: 36px;
+        padding: 0 16px;
+        font-size: 1rem;
+      }
+
+      .badges {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 12px 16px;
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        border-radius: 9px;
+      }
+
+      .badge svg {
+        display: block;
+        height: 48px;
+      }
+
+      .badge--apple svg {
+        width: 144px;
+      }
+
+      .badge--soon svg {
+        width: 162px;
+        opacity: 0.4;
+      }
+
+      .badge--soon span {
+        font-size: 0.875rem;
+        color: var(--ink-2);
+      }
+
+      /* Hero */
+
+      .hero .wrap {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 24px 64px;
+        padding-top: clamp(32px, 7vw, 88px);
+        padding-bottom: clamp(32px, 5vw, 56px);
+      }
+
+      @media (min-width: 900px) {
+        .hero .wrap {
+          grid-template-columns: 1.25fr 1fr;
+          align-items: end;
+        }
+      }
+
+      .hero h1 {
+        margin: 0;
+        font-size: clamp(2.5rem, 6.4vw, 4.5rem);
+        line-height: 1;
+        font-weight: 800;
+        font-variation-settings: "wdth" 118;
+        letter-spacing: -0.025em;
+        max-width: 11ch;
+        text-wrap: balance;
+      }
+
+      .hero-copy p {
+        margin: 0;
+        max-width: var(--measure);
+        color: var(--ink-2);
+      }
+
+      /* Demo */
+
+      .band {
+        background: var(--grouped);
+      }
+
+      .demo .wrap {
+        padding-top: clamp(24px, 4vw, 48px);
+        padding-bottom: clamp(24px, 4vw, 48px);
+      }
+
+      .demo-frames {
+        --frame-gap: clamp(12px, 2.5vw, 32px);
+        display: flex;
+        align-items: flex-start;
+        gap: var(--frame-gap);
+      }
+
+      .frame {
+        margin: 0;
+        min-width: 0;
+      }
+
+      .frame figcaption {
+        margin-top: 10px;
+        font-size: 0.875rem;
+        color: var(--ink-2);
+      }
+
+      /* Flex-grow equal to each frame's aspect ratio keeps both at the same height,
+         so the original and the result are shown at the same scale. */
+      .frame--source {
+        flex: 1.3333 1 0;
+      }
+
+      .frame--output {
+        flex: var(--out-ar, 1.7778) 1 0;
+      }
+
+      .stage,
+      .output {
+        position: relative;
+        border-radius: 12px;
+        overflow: hidden;
+      }
+
+      .stage {
+        aspect-ratio: 4 / 3;
+      }
+
+      .output {
+        aspect-ratio: var(--out-ar, 1.7778);
+        background: #000;
+      }
+
+      .stage svg,
+      .output svg {
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+
+      .crop {
+        position: absolute;
+        border: 2px solid #fff;
+        border-radius: 3px;
+        box-shadow: 0 0 0 200vmax var(--dim);
+        pointer-events: none;
+      }
+
+      .demo-controls {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 12px 20px;
+        margin-top: 24px;
+      }
+
+      .segmented {
+        display: inline-grid;
+        grid-auto-flow: column;
+        grid-auto-columns: 1fr;
+        margin: 0;
+        padding: 2px;
+        border: 0;
+        border-radius: 9px;
+        background: var(--track);
+        position: relative;
+      }
+
+      .segmented input {
+        position: absolute;
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .segmented label {
+        display: block;
+        min-width: 6rem;
+        padding: 6px 14px;
+        border-radius: 7px;
+        text-align: center;
+        font-size: 0.9375rem;
+        font-weight: 500;
+        cursor: pointer;
+        user-select: none;
+        position: relative;
+        z-index: 1;
+        transition: font-weight 0.2s ease;
+      }
+
+      .segmented input:checked + label {
+        font-weight: 600;
+      }
+
+      /* One shared thumb that slides under whichever option is checked. */
+      .segmented-thumb {
+        position: absolute;
+        top: 2px;
+        bottom: 2px;
+        left: 2px;
+        width: calc((100% - 4px) / var(--options, 2));
+        border-radius: 7px;
+        background: var(--thumb);
+        box-shadow: var(--thumb-shadow);
+        transition:
+          transform 0.32s cubic-bezier(0.3, 1.25, 0.5, 1),
+          scale 0.15s ease;
+      }
+
+      .segmented:has(input:nth-of-type(2):checked) .segmented-thumb {
+        transform: translateX(100%);
+      }
+
+      .segmented:has(input:nth-of-type(3):checked) .segmented-thumb {
+        transform: translateX(200%);
+      }
+
+      .segmented:active .segmented-thumb {
+        scale: 0.96;
+      }
+
+      .segmented input:focus-visible + label {
+        outline: 3px solid var(--blue);
+        outline-offset: 1px;
+      }
+
+      .demo-caption {
+        flex: 1 1 100%;
+        margin: 0;
+        font-size: 1rem;
+        color: var(--ink-2);
+        max-width: var(--measure);
+        min-height: 3em;
+      }
+
+      @media (max-width: 700px) {
+        .demo[data-format="landscape"] .demo-frames {
+          flex-direction: column;
+          align-items: stretch;
+        }
+        .demo[data-format="landscape"] .frame {
+          flex: none;
+        }
+        .segmented label {
+          min-width: 0;
+          padding: 6px 10px;
+        }
+        .segmented {
+          flex: 1 1 100%;
+        }
+      }
+
+      /* Points */
+
+      .points .wrap {
+        padding-top: clamp(56px, 9vw, 112px);
+        padding-bottom: clamp(40px, 6vw, 72px);
+      }
+
+      .points dl {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 32px 48px;
+        margin: 0;
+      }
+
+      @media (min-width: 800px) {
+        .points dl {
+          grid-template-columns: repeat(3, 1fr);
+        }
+      }
+
+      .points dt {
+        font-size: clamp(1.75rem, 3vw, 2.25rem);
+        line-height: 1.1;
+        font-weight: 800;
+        font-variation-settings: "wdth" 118;
+        letter-spacing: -0.02em;
+        margin-bottom: 12px;
+      }
+
+      .points dd {
+        margin: 0;
+        color: var(--ink-2);
+        max-width: var(--measure);
+      }
+
+      /* Pricing */
+
+      .pricing .wrap {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 32px 64px;
+        padding-top: clamp(40px, 6vw, 72px);
+        padding-bottom: clamp(56px, 9vw, 112px);
+      }
+
+      @media (min-width: 900px) {
+        .pricing .wrap {
+          grid-template-columns: 1fr 1fr;
+          align-items: center;
+        }
+      }
+
+      .pricing h2 {
+        margin: 0 0 16px;
+        font-size: clamp(2.25rem, 4.5vw, 3rem);
+        line-height: 1.05;
+        font-weight: 800;
+        font-variation-settings: "wdth" 118;
+        letter-spacing: -0.02em;
+      }
+
+      .pricing p {
+        margin: 0 0 24px;
+        color: var(--ink-2);
+        max-width: var(--measure);
+      }
+
+      .terms ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        border-top: 1px solid var(--separator);
+      }
+
+      .terms li {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: 16px;
+        padding: 16px 0;
+        border-bottom: 1px solid var(--separator);
+      }
+
+      .terms li span:last-child {
+        color: var(--ink-2);
+        text-align: right;
+      }
+
+      .terms li strong {
+        color: var(--blue);
+        font-weight: 600;
+      }
+
+      .terms .footnote {
+        margin: 12px 0 0;
+        font-size: 0.875rem;
+        color: var(--ink-2);
+      }
+
+      /* Footer */
+
+      .site-footer {
+        background: var(--grouped);
+        color: var(--ink-2);
+      }
+
+      .site-footer .wrap {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px 48px;
+        padding-top: 32px;
+        padding-bottom: 32px;
+      }
+
+      .footer-nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px 32px;
+        font-size: 1rem;
+      }
+
+      .footer-nav a {
+        color: var(--ink);
+        text-decoration: none;
+      }
+
+      .footer-nav a:hover {
+        color: var(--blue);
+      }
+
+      .footer-legal {
+        margin: 0;
+        font-size: 0.875rem;
+      }
+
+      @media (max-width: 520px) {
+        .site-nav .nav-support {
+          display: none;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        html {
+          scroll-behavior: auto;
+        }
+        .frame--output,
+        .segmented label,
+        .segmented-thumb,
+        .button {
+          transition: none;
+        }
+      }
+    </style>
   </head>
   <body>
-    <h1>POV</h1>
-    <p>Coming soon.</p>
-    <p>
-      <a href="support/">Support</a> ·
-      <a href="privacy-policy/">Privacy Policy</a>
-    </p>
+    <!--
+      TODO: Replace these hand-drawn badges with the official artwork before launch:
+      App Store: https://developer.apple.com/app-store/marketing/guidelines/ (Apple Marketing Tools)
+      Google Play: https://play.google.com/intl/en_us/badges/
+    -->
+    <svg width="0" height="0" style="position: absolute" aria-hidden="true">
+      <!--
+        TODO: Replace this placeholder icon with the real POV app icon. It's used in the
+        header, so either change this symbol or swap the <svg><use href="#app-icon">
+        for <img src="assets/app-icon.png" alt="" /> (keep alt empty: the "POV" text next to
+        it already names the link). Also add it as the favicon / apple-touch-icon in <head>.
+      -->
+      <symbol id="app-icon" viewBox="0 0 64 64">
+        <rect width="64" height="64" rx="14" fill="#007AFF" />
+        <rect
+          x="11"
+          y="16.5"
+          width="42"
+          height="31.5"
+          rx="3"
+          fill="none"
+          stroke="#fff"
+          stroke-width="3"
+          stroke-opacity="0.55"
+        />
+        <rect x="29" y="16.5" width="17.7" height="31.5" rx="3" fill="#fff" />
+      </symbol>
+      <symbol id="badge-app-store" viewBox="0 0 120 40">
+        <rect
+          x="0.5"
+          y="0.5"
+          width="119"
+          height="39"
+          rx="6.5"
+          fill="#000"
+          stroke="#a6a6a6"
+        />
+        <path
+          transform="translate(9 8.5) scale(0.95)"
+          fill="#fff"
+          d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"
+        />
+        <g
+          fill="#fff"
+          font-family="-apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, sans-serif"
+        >
+          <text x="36" y="16.5" font-size="7.6">Download on the</text>
+          <text
+            x="35.4"
+            y="31"
+            font-size="15.6"
+            font-weight="600"
+            letter-spacing="-0.3"
+          >
+            App Store
+          </text>
+        </g>
+      </symbol>
+      <symbol id="badge-google-play" viewBox="0 0 135 40">
+        <rect
+          x="0.5"
+          y="0.5"
+          width="134"
+          height="39"
+          rx="6.5"
+          fill="#000"
+          stroke="#a6a6a6"
+        />
+        <g transform="translate(10 8)">
+          <path d="M1 1 L13 12 L1 23 Z" fill="#00a0ff" />
+          <path d="M1 1 L17.5 8.6 L13 12 Z" fill="#00d26a" />
+          <path d="M13 12 L17.5 15.4 L1 23 Z" fill="#ff3a44" />
+          <path
+            d="M17.5 8.6 L21.4 10.6 Q 22.6 12 21.4 13.4 L17.5 15.4 L13 12 Z"
+            fill="#ffc400"
+          />
+        </g>
+        <g
+          fill="#fff"
+          font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"
+        >
+          <text x="41" y="15.5" font-size="7.2" letter-spacing="0.4">
+            GET IT ON
+          </text>
+          <text
+            x="40.4"
+            y="31"
+            font-size="15.6"
+            font-weight="500"
+            letter-spacing="-0.2"
+          >
+            Google Play
+          </text>
+        </g>
+      </symbol>
+    </svg>
+    <header class="site-header" id="site-header">
+      <div class="wrap">
+        <a class="brand" href="./" aria-label="POV home">
+          <svg aria-hidden="true"><use href="#app-icon" /></svg>
+          POV
+        </a>
+        <nav class="site-nav" aria-label="Main">
+          <a class="nav-support" href="support/">Support</a>
+          <a class="button button--small" href="#download">Download</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="wrap">
+          <h1 id="hero-title">Make 4:3 video fit any screen.</h1>
+          <div class="hero-copy">
+            <p>
+              POV turns 4:3 footage into 16:9 landscape or 9:16 portrait.
+              Instead of cropping away half the picture or stretching everything
+              evenly, it keeps the middle of the shot natural and reshapes the
+              edges to fit. Everything runs on your phone.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!--
+        TODO: Check the reshaping formula used by this demo (the POV object in the script below)
+        against the app's actual landscape and portrait algorithms, and adjust the numbers.
+        TODO: Replace the illustrated beach scene with real 4:3 images of a mountain biker.
+        Put an <image href="assets/biker.jpg" width="400" height="300" /> inside <g id="scene">
+        in place of the drawn shapes, then update the aria-label and the captions in CAPTIONS,
+        which mention the kite and the dog.
+      -->
+      <section
+        class="demo band"
+        data-format="landscape"
+        data-mode="pov"
+        aria-label="Reframing demo"
+      >
+        <div class="wrap">
+          <div class="demo-frames">
+            <figure class="frame frame--source">
+              <div class="stage">
+                <svg
+                  id="source"
+                  viewBox="0 0 400 300"
+                  role="img"
+                  aria-label="Illustration of a 4:3 video: a person flying a kite on the beach, with a dog and a ball nearby"
+                >
+                  <defs>
+                    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0" style="stop-color: var(--sky-top)" />
+                      <stop offset="1" style="stop-color: var(--sky-bottom)" />
+                    </linearGradient>
+                    <g id="scene">
+                      <rect width="400" height="300" fill="url(#sky)" />
+                      <circle
+                        cx="58"
+                        cy="64"
+                        r="24"
+                        fill="#fff"
+                        opacity="0.8"
+                      />
+                      <rect
+                        x="120"
+                        y="70"
+                        width="70"
+                        height="16"
+                        rx="8"
+                        fill="#fff"
+                        opacity="0.6"
+                      />
+                      <rect
+                        x="140"
+                        y="60"
+                        width="34"
+                        height="18"
+                        rx="9"
+                        fill="#fff"
+                        opacity="0.6"
+                      />
+                      <rect
+                        x="330"
+                        y="104"
+                        width="54"
+                        height="12"
+                        rx="6"
+                        fill="#fff"
+                        opacity="0.5"
+                      />
+                      <rect
+                        y="176"
+                        width="400"
+                        height="34"
+                        style="fill: var(--sea)"
+                      />
+                      <rect
+                        y="206"
+                        width="400"
+                        height="94"
+                        style="fill: var(--sand)"
+                      />
+                      <path
+                        d="M236 118 Q 280 112 300 66"
+                        fill="none"
+                        stroke-width="1.2"
+                        style="stroke: var(--figure)"
+                      />
+                      <path
+                        d="M300 22 L320 44 L300 66 L280 44 Z"
+                        fill="#ff9500"
+                      />
+                      <path
+                        d="M300 22 V66 M280 44 H320"
+                        stroke="#fff"
+                        stroke-width="1.2"
+                        opacity="0.7"
+                      />
+                      <g style="fill: var(--figure)">
+                        <rect x="189" y="200" width="9" height="70" rx="4.5" />
+                        <rect x="202" y="200" width="9" height="70" rx="4.5" />
+                        <circle cx="200" cy="120" r="15" />
+                        <ellipse cx="285" cy="250" rx="22" ry="11" />
+                        <circle cx="308" cy="236" r="9" />
+                        <rect x="268" y="252" width="5" height="18" rx="2.5" />
+                        <rect x="277" y="254" width="5" height="16" rx="2.5" />
+                        <rect x="290" y="254" width="5" height="16" rx="2.5" />
+                        <rect x="299" y="252" width="5" height="18" rx="2.5" />
+                      </g>
+                      <g
+                        fill="none"
+                        stroke-linecap="round"
+                        style="stroke: var(--figure)"
+                      >
+                        <path d="M214 148 L236 118" stroke-width="8" />
+                        <path d="M186 148 L178 192" stroke-width="8" />
+                        <path d="M264 246 Q 254 236 258 228" stroke-width="4" />
+                      </g>
+                      <rect
+                        x="183"
+                        y="138"
+                        width="34"
+                        height="72"
+                        rx="13"
+                        style="fill: var(--blue)"
+                      />
+                      <circle
+                        cx="96"
+                        cy="258"
+                        r="11"
+                        fill="#fff"
+                        stroke-width="2"
+                        style="stroke: var(--figure)"
+                      />
+                      <path
+                        d="M85 258 H107 M96 247 V269"
+                        stroke-width="1.6"
+                        style="stroke: var(--figure)"
+                      />
+                    </g>
+                  </defs>
+                  <use href="#scene" />
+                </svg>
+                <div class="crop" id="crop"></div>
+              </div>
+              <figcaption>Original</figcaption>
+            </figure>
+
+            <figure class="frame frame--output">
+              <div class="output">
+                <svg
+                  id="output"
+                  viewBox="0 0 533.33 300"
+                  preserveAspectRatio="none"
+                  aria-hidden="true"
+                >
+                  <g id="strips"></g>
+                </svg>
+              </div>
+              <figcaption>Result</figcaption>
+            </figure>
+          </div>
+
+          <div class="demo-controls">
+            <fieldset class="segmented">
+              <legend class="visually-hidden">Output format</legend>
+              <span class="segmented-thumb" aria-hidden="true"></span>
+              <input
+                type="radio"
+                name="format"
+                id="f-landscape"
+                value="landscape"
+                checked
+              />
+              <label for="f-landscape">Landscape</label>
+              <input
+                type="radio"
+                name="format"
+                id="f-portrait"
+                value="portrait"
+              />
+              <label for="f-portrait">Portrait</label>
+            </fieldset>
+            <fieldset class="segmented">
+              <legend class="visually-hidden">Reframing method</legend>
+              <span class="segmented-thumb" aria-hidden="true"></span>
+              <input type="radio" name="mode" id="m-pov" value="pov" checked />
+              <label for="m-pov">POV</label>
+              <input type="radio" name="mode" id="m-crop" value="crop" />
+              <label for="m-crop">Crop</label>
+            </fieldset>
+            <p class="demo-caption" id="caption" aria-live="polite"></p>
+          </div>
+        </div>
+      </section>
+
+      <section class="points" aria-label="Features">
+        <div class="wrap">
+          <dl>
+            <div>
+              <dt>Natural</dt>
+              <dd>
+                The middle of the shot is usually where action is, so that’s
+                where POV changes the least. The distortion happens toward the
+                edges, where it’s hardest to notice.
+              </dd>
+            </div>
+            <div>
+              <dt>Universal</dt>
+              <dd>
+                Make a landscape version for YouTube and the TV, and a portrait
+                version for Reels, Shorts and TikTok, from the same clip.
+              </dd>
+            </div>
+            <div>
+              <dt>Private</dt>
+              <dd>
+                All processing happens on your device. Your videos are never
+                uploaded, so they stay as private as the rest of your photo
+                library.
+              </dd>
+            </div>
+          </dl>
+        </div>
+      </section>
+
+      <section class="pricing" id="download" aria-labelledby="pricing-title">
+        <div class="wrap">
+          <div>
+            <h2 id="pricing-title">Try it free. Pay once.</h2>
+            <p>
+              Reframe your first few videos for free. When you want to keep
+              going, unlock POV with a single purchase. There’s no subscription.
+            </p>
+            <div class="badges">
+              <!-- TODO: replace # with the App Store link -->
+              <a
+                class="badge badge--apple"
+                href="#"
+                aria-label="Download on the App Store"
+              >
+                <svg aria-hidden="true"><use href="#badge-app-store" /></svg>
+              </a>
+              <span
+                class="badge badge--soon"
+                role="img"
+                aria-label="Google Play: coming soon"
+              >
+                <svg aria-hidden="true"><use href="#badge-google-play" /></svg>
+                <span aria-hidden="true">Coming soon</span>
+              </span>
+            </div>
+          </div>
+          <div class="terms">
+            <ul>
+              <li>
+                <span>First few videos</span><span><strong>Free</strong></span>
+              </li>
+              <li>
+                <span>Unlimited videos</span><span>One-time purchase</span>
+              </li>
+              <li><span>Processing</span><span>On your phone</span></li>
+            </ul>
+            <p class="footnote">
+              You’ll see the price in your local currency before you buy.
+            </p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="wrap">
+        <p class="footer-legal">© 2026 POV</p>
+        <nav class="footer-nav" aria-label="Footer">
+          <a href="#download">Download</a>
+          <a href="support/">Support</a>
+          <a href="privacy-policy/">Privacy Policy</a>
+        </nav>
+      </div>
+    </footer>
+
+    <script>
+      (function () {
+        var SVGNS = "http://www.w3.org/2000/svg";
+        var W = 400,
+          H = 300;
+        var STRIPS = 60;
+
+        // TODO: Check this formula against the app's real landscape and portrait reshaping.
+        // How POV reshapes the frame. Horizontal scale at the center is 1 (untouched);
+        // `edge` is the relative scale at the far left/right, `curve` how quickly it ramps.
+        // `keep` is how much of the 4:3 width is kept before reshaping.
+        var POV = {
+          landscape: { keep: 400, edge: 2.0, curve: 2 },
+          portrait: { keep: 240, edge: 0.2, curve: 1.7 },
+        };
+        var OUT_W = { landscape: (H * 16) / 9, portrait: (H * 9) / 16 };
+        var CAPTIONS = {
+          "pov-landscape": "",
+          "pov-portrait":
+            "POV trims the sides a little, then squeezes what’s left toward the edges so the middle still looks natural.",
+          "crop-landscape":
+            "Cropping to landscape cuts off the top and bottom of the shot, including the kite and everyone’s feet.",
+          "crop-portrait":
+            "Cropping to portrait throws away more than half of the picture.",
+        };
+
+        var demo = document.querySelector(".demo");
+        var output = document.getElementById("output");
+        var stripsG = document.getElementById("strips");
+        var crop = document.getElementById("crop");
+        var caption = document.getElementById("caption");
+        var reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+        var settings = { format: "landscape", mode: "pov" };
+
+        // A layout: source column edges S (in the 4:3 frame), destination edges D
+        // (in the output), the vertical source window and the output width.
+        function uniform(a, b) {
+          var out = [];
+          for (var i = 0; i <= STRIPS; i++)
+            out.push(a + ((b - a) * i) / STRIPS);
+          return out;
+        }
+
+        function target(format, mode) {
+          var ow = OUT_W[format];
+          if (mode === "crop") {
+            if (format === "landscape") {
+              var sh = (W * 9) / 16;
+              return {
+                S: uniform(0, W),
+                D: uniform(0, ow),
+                sy: (H - sh) / 2,
+                sh: sh,
+                ow: ow,
+              };
+            }
+            return {
+              S: uniform((W - ow) / 2, (W + ow) / 2),
+              D: uniform(0, ow),
+              sy: 0,
+              sh: H,
+              ow: ow,
+            };
+          }
+          var p = POV[format];
+          var S = uniform((W - p.keep) / 2, (W + p.keep) / 2);
+          var widths = [],
+            total = 0;
+          for (var i = 0; i < STRIPS; i++) {
+            var u = Math.abs(((i + 0.5) / STRIPS) * 2 - 1);
+            var s = 1 + (p.edge - 1) * Math.pow(u, p.curve);
+            widths.push(s);
+            total += s;
+          }
+          var D = [0],
+            acc = 0;
+          for (var j = 0; j < STRIPS; j++) {
+            acc += widths[j];
+            D.push((acc / total) * ow);
+          }
+          return { S: S, D: D, sy: 0, sh: H, ow: ow };
+        }
+
+        function lerp(a, b, t) {
+          return a + (b - a) * t;
+        }
+
+        function mix(a, b, t) {
+          var S = [],
+            D = [];
+          for (var i = 0; i <= STRIPS; i++) {
+            S.push(lerp(a.S[i], b.S[i], t));
+            D.push(lerp(a.D[i], b.D[i], t));
+          }
+          return {
+            S: S,
+            D: D,
+            sy: lerp(a.sy, b.sy, t),
+            sh: lerp(a.sh, b.sh, t),
+            ow: lerp(a.ow, b.ow, t),
+          };
+        }
+
+        // One nested <svg> per strip, each showing a slice of the scene squeezed or stretched
+        // into its destination width. Together they form a piecewise-linear warp.
+        var strips = [];
+        for (var i = 0; i < STRIPS; i++) {
+          var svg = document.createElementNS(SVGNS, "svg");
+          svg.setAttribute("preserveAspectRatio", "none");
+          svg.setAttribute("y", "0");
+          svg.setAttribute("height", H);
+          var use = document.createElementNS(SVGNS, "use");
+          use.setAttribute("href", "#scene");
+          svg.appendChild(use);
+          stripsG.appendChild(svg);
+          strips.push(svg);
+        }
+
+        function draw(L) {
+          output.setAttribute("viewBox", "0 0 " + L.ow.toFixed(3) + " " + H);
+          demo.style.setProperty("--out-ar", (L.ow / H).toFixed(4));
+
+          for (var i = 0; i < STRIPS; i++) {
+            var sw = L.S[i + 1] - L.S[i];
+            var dw = L.D[i + 1] - L.D[i];
+            // Overlap neighbours slightly so anti-aliased edges don't show as seams.
+            var s = strips[i];
+            s.setAttribute("x", L.D[i].toFixed(3));
+            s.setAttribute("width", (dw + 0.6).toFixed(3));
+            s.setAttribute(
+              "viewBox",
+              L.S[i].toFixed(3) +
+                " " +
+                L.sy.toFixed(3) +
+                " " +
+                (sw + (0.6 * sw) / dw).toFixed(3) +
+                " " +
+                L.sh.toFixed(3),
+            );
+          }
+
+          var cw = L.S[STRIPS] - L.S[0];
+          crop.style.left = (L.S[0] / W) * 100 + "%";
+          crop.style.top = (L.sy / H) * 100 + "%";
+          crop.style.width = (cw / W) * 100 + "%";
+          crop.style.height = (L.sh / H) * 100 + "%";
+          crop.style.opacity = cw * L.sh > W * H * 0.995 ? 0 : 1;
+        }
+
+        var current = target(settings.format, settings.mode);
+        var anim = null;
+
+        function go() {
+          var from = current;
+          var to = target(settings.format, settings.mode);
+          demo.dataset.format = settings.format;
+          demo.dataset.mode = settings.mode;
+          caption.textContent = CAPTIONS[settings.mode + "-" + settings.format];
+
+          if (anim) cancelAnimationFrame(anim);
+          if (reduce.matches) {
+            current = to;
+            var header = document.getElementById("site-header");
+            function onScroll() {
+              header.toggleAttribute("data-scrolled", window.scrollY > 4);
+            }
+            window.addEventListener("scroll", onScroll, { passive: true });
+            onScroll();
+
+            draw(current);
+            return;
+          }
+          var start = null,
+            DURATION = 550;
+          function step(now) {
+            if (start == null) start = now;
+            var t = Math.min(1, (now - start) / DURATION);
+            var e = 1 - Math.pow(1 - t, 3);
+            current = mix(from, to, e);
+            draw(current);
+            anim = t < 1 ? requestAnimationFrame(step) : null;
+          }
+          anim = requestAnimationFrame(step);
+        }
+
+        document
+          .querySelectorAll('input[name="format"]')
+          .forEach(function (el) {
+            el.addEventListener("change", function () {
+              settings.format = el.value;
+              go();
+            });
+          });
+        document.querySelectorAll('input[name="mode"]').forEach(function (el) {
+          el.addEventListener("change", function () {
+            settings.mode = el.value;
+            go();
+          });
+        });
+
+        draw(current);
+        go();
+      })();
+    </script>
   </body>
 </html>
