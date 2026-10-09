@@ -4,10 +4,133 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Support – POV</title>
+    <meta
+      name="description"
+      content="Get help with POV. Email us with questions, problems or feedback."
+    />
+    <meta
+      name="theme-color"
+      content="#ffffff"
+      media="(prefers-color-scheme: light)"
+    />
+    <meta
+      name="theme-color"
+      content="#000000"
+      media="(prefers-color-scheme: dark)"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="icon" href="../assets/app-icon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="../styles.css" />
+    <script src="../site.js"></script>
+    <style>
+      /* Keep the footer at the bottom of the window on this short page. */
+      body {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        min-height: 100dvh;
+      }
+
+      main {
+        flex: 1;
+      }
+
+      .support .wrap {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 40px 64px;
+        padding-top: clamp(32px, 7vw, 88px);
+        padding-bottom: clamp(56px, 9vw, 112px);
+      }
+
+      @media (min-width: 900px) {
+        .support .wrap {
+          grid-template-columns: 1.25fr 1fr;
+        }
+      }
+
+      .support h1 {
+        margin: 0 0 24px;
+        font-size: clamp(2.5rem, 6.4vw, 4.5rem);
+        line-height: 1;
+        font-weight: 800;
+        font-variation-settings: "wdth" 118;
+        letter-spacing: -0.025em;
+      }
+
+      .support p {
+        margin: 0 0 24px;
+        max-width: var(--measure);
+        color: var(--ink-2);
+      }
+
+      .support h2 {
+        margin: 0 0 16px;
+        font-size: 1.125rem;
+        font-weight: 600;
+      }
+
+      .support ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        border-top: 1px solid var(--separator);
+        color: var(--ink-2);
+      }
+
+      .support li {
+        padding: 16px 0;
+        border-bottom: 1px solid var(--separator);
+      }
+
+      .email {
+        overflow-wrap: anywhere;
+      }
+    </style>
   </head>
   <body>
-    <h1>Support</h1>
-    <p>Placeholder.</p>
-    <p><a href="../">Home</a></p>
+    <site-header></site-header>
+
+    <main>
+      <section class="support" aria-labelledby="support-title">
+        <div class="wrap">
+          <div>
+            <h1 id="support-title">Support</h1>
+            <p>
+              Have a question, found a problem, or have an idea for POV? Send us
+              an email and we’ll get back to you.
+            </p>
+            <p>
+              <a
+                class="button"
+                href="mailto:mihavintar3@gmail.com?subject=POV%20support"
+                >Email support</a
+              >
+            </p>
+            <p>
+              Or write to
+              <a class="email" href="mailto:mihavintar3@gmail.com"
+                >mihavintar3@gmail.com</a
+              >.
+            </p>
+          </div>
+          <div>
+            <h2>It helps if you include</h2>
+            <ul>
+              <li>Your phone model and its software version</li>
+              <li>What you were doing when the problem happened</li>
+              <li>A screenshot or screen recording, if you can</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <site-footer></site-footer>
   </body>
 </html>

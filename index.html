@@ -24,198 +24,14 @@
       href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap"
       rel="stylesheet"
     />
+    <link rel="icon" href="assets/app-icon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="site.js"></script>
     <style>
-      :root {
-        --blue: #007aff;
-        --bg: #ffffff;
-        --grouped: #f2f2f7;
-        --ink: #000000;
-        --ink-2: #5b5b61;
-        --separator: rgba(60, 60, 67, 0.18);
-        --track: rgba(118, 118, 128, 0.14);
-        --thumb: #ffffff;
-        --thumb-shadow:
-          0 3px 8px rgba(0, 0, 0, 0.12), 0 3px 1px rgba(0, 0, 0, 0.04);
-
-        --sky-top: #b9d8ff;
-        --sky-bottom: #eef5ff;
-        --sea: #6fa8f2;
-        --sand: #efe9dd;
-        --figure: #1c1c1e;
-        --dim: rgba(0, 0, 0, 0.52);
-
-        --bar: rgba(255, 255, 255, 0.78);
-        --font:
-          "Archivo", -apple-system, BlinkMacSystemFont, "Helvetica Neue",
-          sans-serif;
-        --measure: 34rem;
-        --gutter: clamp(16px, 4vw, 48px);
-        --max: 1200px;
-        color-scheme: light dark;
-      }
-
       @media (prefers-color-scheme: dark) {
-        :root {
-          --blue: #0a84ff;
-          --bg: #000000;
-          --grouped: #000000;
-          --ink: #ffffff;
-          --ink-2: #a1a1a8;
-          --separator: rgba(84, 84, 88, 0.6);
-          --track: rgba(118, 118, 128, 0.24);
-          --thumb: #636366;
-          --thumb-shadow: none;
-          --bar: rgba(0, 0, 0, 0.72);
-
-          --sky-top: #0b2a55;
-          --sky-bottom: #1f5596;
-          --sea: #123b70;
-          --sand: #3a362f;
-          --figure: #f2f2f7;
-          --dim: rgba(0, 0, 0, 0.6);
-        }
         .band {
           background: #1c1c1e;
         }
-      }
-
-      *,
-      *::before,
-      *::after {
-        box-sizing: border-box;
-      }
-
-      html {
-        scroll-behavior: smooth;
-        scroll-padding-top: 72px;
-        -webkit-text-size-adjust: 100%;
-      }
-
-      body {
-        margin: 0;
-        background: var(--bg);
-        color: var(--ink);
-        font-family: var(--font);
-        font-size: 1.125rem;
-        line-height: 1.5;
-        font-variation-settings: "wdth" 100;
-        -webkit-font-smoothing: antialiased;
-      }
-
-      a {
-        color: inherit;
-      }
-
-      :focus-visible {
-        outline: 3px solid var(--blue);
-        outline-offset: 3px;
-        border-radius: 6px;
-      }
-
-      .wrap {
-        width: 100%;
-        max-width: var(--max);
-        margin: 0 auto;
-        padding: 0 var(--gutter);
-      }
-
-      .visually-hidden {
-        position: absolute;
-        width: 1px;
-        height: 1px;
-        margin: -1px;
-        overflow: hidden;
-        clip: rect(0 0 0 0);
-        white-space: nowrap;
-      }
-
-      /* Header */
-
-      .site-header {
-        position: sticky;
-        top: 0;
-        z-index: 10;
-        background: var(--bar);
-        -webkit-backdrop-filter: saturate(180%) blur(20px);
-        backdrop-filter: saturate(180%) blur(20px);
-        border-bottom: 1px solid transparent;
-        transition: border-color 0.2s ease;
-      }
-
-      .site-header[data-scrolled] {
-        border-bottom-color: var(--separator);
-      }
-
-      .site-header .wrap {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 16px;
-        padding-top: 12px;
-        padding-bottom: 12px;
-      }
-
-      .brand {
-        display: inline-flex;
-        align-items: center;
-        gap: 10px;
-        text-decoration: none;
-        font-weight: 800;
-        font-size: 1.3125rem;
-        font-variation-settings: "wdth" 125;
-        letter-spacing: 0.01em;
-      }
-
-      .brand svg {
-        width: 34px;
-        height: 34px;
-        flex: none;
-      }
-
-      .site-nav {
-        display: flex;
-        align-items: center;
-        gap: 24px;
-        font-size: 1rem;
-      }
-
-      .site-nav a:not(.button) {
-        text-decoration: none;
-        color: var(--ink-2);
-      }
-
-      .site-nav a:not(.button):hover {
-        color: var(--ink);
-      }
-
-      .button {
-        display: inline-flex;
-        align-items: center;
-        gap: 10px;
-        min-height: 44px;
-        padding: 0 20px;
-        border-radius: 999px;
-        background: var(--blue);
-        color: #fff;
-        font-weight: 600;
-        font-size: 1.1875rem;
-        text-decoration: none;
-        white-space: nowrap;
-        transition: filter 0.15s ease;
-      }
-
-      .button:hover {
-        filter: brightness(1.08);
-      }
-
-      .button:active {
-        filter: brightness(0.92);
-      }
-
-      .button--small {
-        min-height: 36px;
-        padding: 0 16px;
-        font-size: 1rem;
       }
 
       .badges {
@@ -557,58 +373,10 @@
         color: var(--ink-2);
       }
 
-      /* Footer */
-
-      .site-footer {
-        background: var(--grouped);
-        color: var(--ink-2);
-      }
-
-      .site-footer .wrap {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        justify-content: space-between;
-        gap: 16px 48px;
-        padding-top: 32px;
-        padding-bottom: 32px;
-      }
-
-      .footer-nav {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 12px 32px;
-        font-size: 1rem;
-      }
-
-      .footer-nav a {
-        color: var(--ink);
-        text-decoration: none;
-      }
-
-      .footer-nav a:hover {
-        color: var(--blue);
-      }
-
-      .footer-legal {
-        margin: 0;
-        font-size: 0.875rem;
-      }
-
-      @media (max-width: 520px) {
-        .site-nav .nav-support {
-          display: none;
-        }
-      }
-
       @media (prefers-reduced-motion: reduce) {
-        html {
-          scroll-behavior: auto;
-        }
         .frame--output,
         .segmented label,
-        .segmented-thumb,
-        .button {
+        .segmented-thumb {
           transition: none;
         }
       }
@@ -621,27 +389,6 @@
       Google Play: https://play.google.com/intl/en_us/badges/
     -->
     <svg width="0" height="0" style="position: absolute" aria-hidden="true">
-      <!--
-        TODO: Replace this placeholder icon with the real POV app icon. It's used in the
-        header, so either change this symbol or swap the <svg><use href="#app-icon">
-        for <img src="assets/app-icon.png" alt="" /> (keep alt empty: the "POV" text next to
-        it already names the link). Also add it as the favicon / apple-touch-icon in <head>.
-      -->
-      <symbol id="app-icon" viewBox="0 0 64 64">
-        <rect width="64" height="64" rx="14" fill="#007AFF" />
-        <rect
-          x="11"
-          y="16.5"
-          width="42"
-          height="31.5"
-          rx="3"
-          fill="none"
-          stroke="#fff"
-          stroke-width="3"
-          stroke-opacity="0.55"
-        />
-        <rect x="29" y="16.5" width="17.7" height="31.5" rx="3" fill="#fff" />
-      </symbol>
       <symbol id="badge-app-store" viewBox="0 0 120 40">
         <rect
           x="0.5"
@@ -711,18 +458,7 @@
         </g>
       </symbol>
     </svg>
-    <header class="site-header" id="site-header">
-      <div class="wrap">
-        <a class="brand" href="./" aria-label="POV home">
-          <svg aria-hidden="true"><use href="#app-icon" /></svg>
-          POV
-        </a>
-        <nav class="site-nav" aria-label="Main">
-          <a class="nav-support" href="support/">Support</a>
-          <a class="button button--small" href="#download">Download</a>
-        </nav>
-      </div>
-    </header>
+    <site-header></site-header>
 
     <main>
       <section class="hero" aria-labelledby="hero-title">
@@ -1005,16 +741,7 @@
       </section>
     </main>
 
-    <footer class="site-footer">
-      <div class="wrap">
-        <p class="footer-legal">© 2026 POV</p>
-        <nav class="footer-nav" aria-label="Footer">
-          <a href="#download">Download</a>
-          <a href="support/">Support</a>
-          <a href="privacy-policy/">Privacy Policy</a>
-        </nav>
-      </div>
-    </footer>
+    <site-footer></site-footer>
 
     <script>
       (function () {
@@ -1179,13 +906,6 @@
           if (anim) cancelAnimationFrame(anim);
           if (reduce.matches) {
             current = to;
-            var header = document.getElementById("site-header");
-            function onScroll() {
-              header.toggleAttribute("data-scrolled", window.scrollY > 4);
-            }
-            window.addEventListener("scroll", onScroll, { passive: true });
-            onScroll();
-
             draw(current);
             return;
           }

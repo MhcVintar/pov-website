@@ -1,0 +1,8 @@
+[tools]
+prettier = "latest"
+
+[tasks.default]
+depends = "fmt"
+
+[tasks.fmt]
+run = "prettier --write ."

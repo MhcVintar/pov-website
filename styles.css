@@ -1,0 +1,251 @@
+/* Shared by every page: design tokens, base styles, header and footer. */
+
+:root {
+  --blue: #007aff;
+  --bg: #ffffff;
+  --grouped: #f2f2f7;
+  --ink: #000000;
+  --ink-2: #5b5b61;
+  --separator: rgba(60, 60, 67, 0.18);
+  --track: rgba(118, 118, 128, 0.14);
+  --thumb: #ffffff;
+  --thumb-shadow: 0 3px 8px rgba(0, 0, 0, 0.12), 0 3px 1px rgba(0, 0, 0, 0.04);
+
+  --sky-top: #b9d8ff;
+  --sky-bottom: #eef5ff;
+  --sea: #6fa8f2;
+  --sand: #efe9dd;
+  --figure: #1c1c1e;
+  --dim: rgba(0, 0, 0, 0.52);
+
+  --bar: rgba(255, 255, 255, 0.78);
+  --font:
+    "Archivo", -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+  --measure: 34rem;
+  --gutter: clamp(16px, 4vw, 48px);
+  --max: 1200px;
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --blue: #0a84ff;
+    --bg: #000000;
+    --grouped: #000000;
+    --ink: #ffffff;
+    --ink-2: #a1a1a8;
+    --separator: rgba(84, 84, 88, 0.6);
+    --track: rgba(118, 118, 128, 0.24);
+    --thumb: #636366;
+    --thumb-shadow: none;
+    --bar: rgba(0, 0, 0, 0.72);
+
+    --sky-top: #0b2a55;
+    --sky-bottom: #1f5596;
+    --sea: #123b70;
+    --sand: #3a362f;
+    --figure: #f2f2f7;
+    --dim: rgba(0, 0, 0, 0.6);
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 72px;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: 1.125rem;
+  line-height: 1.5;
+  font-variation-settings: "wdth" 100;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 3px solid var(--blue);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+.wrap {
+  width: 100%;
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* The custom elements from site.js are only wrappers; their content does the layout. */
+site-header,
+site-footer {
+  display: contents;
+}
+
+/* Header */
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--bar);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s ease;
+}
+
+.site-header[data-scrolled] {
+  border-bottom-color: var(--separator);
+}
+
+.site-header .wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  font-weight: 800;
+  font-size: 1.3125rem;
+  font-variation-settings: "wdth" 125;
+  letter-spacing: 0.01em;
+}
+
+.brand img {
+  display: block;
+  width: 34px;
+  height: 34px;
+  flex: none;
+}
+
+.site-nav {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  font-size: 1rem;
+}
+
+.site-nav a:not(.button) {
+  text-decoration: none;
+  color: var(--ink-2);
+}
+
+.site-nav a:not(.button):hover,
+.site-nav a[aria-current="page"] {
+  color: var(--ink);
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 0 20px;
+  border-radius: 999px;
+  background: var(--blue);
+  color: #fff;
+  font-weight: 600;
+  font-size: 1.1875rem;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: filter 0.15s ease;
+}
+
+.button:hover {
+  filter: brightness(1.08);
+}
+
+.button:active {
+  filter: brightness(0.92);
+}
+
+.button--small {
+  min-height: 36px;
+  padding: 0 16px;
+  font-size: 1rem;
+}
+
+@media (max-width: 520px) {
+  .site-nav .nav-support {
+    display: none;
+  }
+}
+
+/* Footer */
+
+.site-footer {
+  background: var(--grouped);
+  color: var(--ink-2);
+}
+
+.site-footer .wrap {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px 48px;
+  padding-top: 32px;
+  padding-bottom: 32px;
+}
+
+.footer-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 32px;
+  font-size: 1rem;
+}
+
+.footer-nav a {
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.footer-nav a:hover {
+  color: var(--blue);
+}
+
+.footer-legal {
+  margin: 0;
+  font-size: 0.875rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .site-header,
+  .button {
+    transition: none;
+  }
+}
