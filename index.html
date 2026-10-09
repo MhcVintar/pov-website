@@ -28,12 +28,6 @@
     <link rel="stylesheet" href="styles.css" />
     <script src="site.js"></script>
     <style>
-      @media (prefers-color-scheme: dark) {
-        .band {
-          background: #1c1c1e;
-        }
-      }
-
       .badges {
         display: flex;
         flex-wrap: wrap;
@@ -105,6 +99,13 @@
 
       .band {
         background: var(--grouped);
+      }
+
+      /* Must come after .band: grouped is black in dark mode, which would hide the band. */
+      @media (prefers-color-scheme: dark) {
+        .band {
+          background: #1c1c1e;
+        }
       }
 
       .demo .wrap {
@@ -475,14 +476,6 @@
         </div>
       </section>
 
-      <!--
-        TODO: Check the reshaping formula used by this demo (the POV object in the script below)
-        against the app's actual landscape and portrait algorithms, and adjust the numbers.
-        TODO: Replace the illustrated beach scene with real 4:3 images of a mountain biker.
-        Put an <image href="assets/biker.jpg" width="400" height="300" /> inside <g id="scene">
-        in place of the drawn shapes, then update the aria-label and the captions in CAPTIONS,
-        which mention the kite and the dog.
-      -->
       <section
         class="demo band"
         data-format="landscape"
@@ -497,117 +490,15 @@
                   id="source"
                   viewBox="0 0 400 300"
                   role="img"
-                  aria-label="Illustration of a 4:3 video: a person flying a kite on the beach, with a dog and a ball nearby"
+                  aria-label="A 4:3 video frame filmed from a mountain bike: the rider's hands on the handlebars, with another rider ahead on a dirt trail through the forest"
                 >
                   <defs>
-                    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0" style="stop-color: var(--sky-top)" />
-                      <stop offset="1" style="stop-color: var(--sky-bottom)" />
-                    </linearGradient>
                     <g id="scene">
-                      <rect width="400" height="300" fill="url(#sky)" />
-                      <circle
-                        cx="58"
-                        cy="64"
-                        r="24"
-                        fill="#fff"
-                        opacity="0.8"
-                      />
-                      <rect
-                        x="120"
-                        y="70"
-                        width="70"
-                        height="16"
-                        rx="8"
-                        fill="#fff"
-                        opacity="0.6"
-                      />
-                      <rect
-                        x="140"
-                        y="60"
-                        width="34"
-                        height="18"
-                        rx="9"
-                        fill="#fff"
-                        opacity="0.6"
-                      />
-                      <rect
-                        x="330"
-                        y="104"
-                        width="54"
-                        height="12"
-                        rx="6"
-                        fill="#fff"
-                        opacity="0.5"
-                      />
-                      <rect
-                        y="176"
+                      <image
+                        href="assets/demo.jpg"
                         width="400"
-                        height="34"
-                        style="fill: var(--sea)"
-                      />
-                      <rect
-                        y="206"
-                        width="400"
-                        height="94"
-                        style="fill: var(--sand)"
-                      />
-                      <path
-                        d="M236 118 Q 280 112 300 66"
-                        fill="none"
-                        stroke-width="1.2"
-                        style="stroke: var(--figure)"
-                      />
-                      <path
-                        d="M300 22 L320 44 L300 66 L280 44 Z"
-                        fill="#ff9500"
-                      />
-                      <path
-                        d="M300 22 V66 M280 44 H320"
-                        stroke="#fff"
-                        stroke-width="1.2"
-                        opacity="0.7"
-                      />
-                      <g style="fill: var(--figure)">
-                        <rect x="189" y="200" width="9" height="70" rx="4.5" />
-                        <rect x="202" y="200" width="9" height="70" rx="4.5" />
-                        <circle cx="200" cy="120" r="15" />
-                        <ellipse cx="285" cy="250" rx="22" ry="11" />
-                        <circle cx="308" cy="236" r="9" />
-                        <rect x="268" y="252" width="5" height="18" rx="2.5" />
-                        <rect x="277" y="254" width="5" height="16" rx="2.5" />
-                        <rect x="290" y="254" width="5" height="16" rx="2.5" />
-                        <rect x="299" y="252" width="5" height="18" rx="2.5" />
-                      </g>
-                      <g
-                        fill="none"
-                        stroke-linecap="round"
-                        style="stroke: var(--figure)"
-                      >
-                        <path d="M214 148 L236 118" stroke-width="8" />
-                        <path d="M186 148 L178 192" stroke-width="8" />
-                        <path d="M264 246 Q 254 236 258 228" stroke-width="4" />
-                      </g>
-                      <rect
-                        x="183"
-                        y="138"
-                        width="34"
-                        height="72"
-                        rx="13"
-                        style="fill: var(--blue)"
-                      />
-                      <circle
-                        cx="96"
-                        cy="258"
-                        r="11"
-                        fill="#fff"
-                        stroke-width="2"
-                        style="stroke: var(--figure)"
-                      />
-                      <path
-                        d="M85 258 H107 M96 247 V269"
-                        stroke-width="1.6"
-                        style="stroke: var(--figure)"
+                        height="300"
+                        preserveAspectRatio="none"
                       />
                     </g>
                   </defs>
@@ -750,24 +641,39 @@
           H = 300;
         var STRIPS = 60;
 
-        // TODO: Check this formula against the app's real landscape and portrait reshaping.
-        // How POV reshapes the frame. Horizontal scale at the center is 1 (untouched);
-        // `edge` is the relative scale at the far left/right, `curve` how quickly it ramps.
-        // `keep` is how much of the 4:3 width is kept before reshaping.
-        var POV = {
-          landscape: { keep: 400, edge: 2.0, curve: 2 },
-          portrait: { keep: 240, edge: 0.2, curve: 1.7 },
-        };
+        // The reshaping below tracks the actual app (POV/Pipeline/VideoProcessor.swift
+        // and WarpKernels.metal). When the app's transformation changes, update
+        // POV_KEEP, POV_CURVE and warp() to match.
+
+        // How much of the 4:3 width POV keeps before reshaping. Landscape keeps the whole
+        // frame; portrait crops a centered 3:4 strip at full height.
+        var POV_KEEP = { landscape: W, portrait: (H * 3) / 4 };
         var OUT_W = { landscape: (H * 16) / 9, portrait: (H * 9) / 16 };
         var CAPTIONS = {
           "pov-landscape": "",
           "pov-portrait":
-            "POV trims the sides a little, then squeezes what’s left toward the edges so the middle still looks natural.",
+            "POV keeps a wider slice of the shot than a plain crop, and squeezes its edges so the middle still looks natural.",
           "crop-landscape":
-            "Cropping to landscape cuts off the top and bottom of the shot, including the kite and everyone’s feet.",
+            "Cropping to landscape cuts off the top and bottom of the shot, including the rider’s hands on the handlebars.",
           "crop-portrait":
-            "Cropping to portrait throws away more than half of the picture.",
+            "Cropping to portrait keeps only a narrow strip from the middle of the shot.",
         };
+
+        // How quickly the reshaping ramps up from the middle toward the edges. Lower
+        // values (between 1 and 2) start reshaping closer to the middle and spread it
+        // more evenly; 1 would scale the whole width evenly.
+        var POV_CURVE = { landscape: 2, portrait: 1.5 };
+
+        // The app's warp kernels, for both landscape and portrait. Takes an output
+        // column t (0–1 across the output) and
+        // returns the column it samples from, 0–1 across the kept part of the frame. `q` is
+        // the output width over the kept width. For curves above 1 the slope is 1 at the
+        // center, so the middle keeps its natural proportions.
+        function warp(t, q, curve) {
+          var n = t * 2 - 1;
+          var shaped = Math.sign(n) * Math.pow(Math.abs(n), curve);
+          return q * t + ((1 - q) / 2) * (1 + shaped);
+        }
 
         var demo = document.querySelector(".demo");
         var output = document.getElementById("output");
@@ -808,23 +714,15 @@
               ow: ow,
             };
           }
-          var p = POV[format];
-          var S = uniform((W - p.keep) / 2, (W + p.keep) / 2);
-          var widths = [],
-            total = 0;
-          for (var i = 0; i < STRIPS; i++) {
-            var u = Math.abs(((i + 0.5) / STRIPS) * 2 - 1);
-            var s = 1 + (p.edge - 1) * Math.pow(u, p.curve);
-            widths.push(s);
-            total += s;
+          var keep = POV_KEEP[format];
+          var S = [];
+          for (var i = 0; i <= STRIPS; i++) {
+            S.push(
+              (W - keep) / 2 +
+                keep * warp(i / STRIPS, ow / keep, POV_CURVE[format]),
+            );
           }
-          var D = [0],
-            acc = 0;
-          for (var j = 0; j < STRIPS; j++) {
-            acc += widths[j];
-            D.push((acc / total) * ow);
-          }
-          return { S: S, D: D, sy: 0, sh: H, ow: ow };
+          return { S: S, D: uniform(0, ow), sy: 0, sh: H, ow: ow };
         }
 
         function lerp(a, b, t) {
