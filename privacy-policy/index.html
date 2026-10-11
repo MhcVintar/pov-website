@@ -4,10 +4,266 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Privacy Policy – POV</title>
+    <meta
+      name="description"
+      content="POV reframes your videos on your phone. It doesn't collect, upload or share your videos or personal data."
+    />
+    <meta
+      name="theme-color"
+      content="#ffffff"
+      media="(prefers-color-scheme: light)"
+    />
+    <meta
+      name="theme-color"
+      content="#000000"
+      media="(prefers-color-scheme: dark)"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="icon" href="../assets/app-icon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="../styles.css" />
+    <script src="../site.js"></script>
+    <style>
+      .policy .wrap {
+        padding-top: clamp(32px, 7vw, 88px);
+        padding-bottom: clamp(56px, 9vw, 112px);
+      }
+
+      .policy h1 {
+        margin: 0 0 16px;
+        font-size: clamp(2.5rem, 6.4vw, 4.5rem);
+        line-height: 1;
+        font-weight: 800;
+        font-variation-settings: "wdth" 118;
+        letter-spacing: -0.025em;
+      }
+
+      .policy .updated {
+        margin: 0 0 40px;
+        color: var(--ink-2);
+        font-size: 0.9375rem;
+      }
+
+      .policy .summary {
+        max-width: var(--measure);
+        margin: 0 0 48px;
+        padding: 20px 24px;
+        border-radius: 16px;
+        background: var(--grouped);
+        border: 1px solid var(--separator);
+      }
+
+      .policy .summary p {
+        margin: 0;
+        color: var(--ink);
+      }
+
+      .policy h2 {
+        margin: 48px 0 12px;
+        font-size: 1.25rem;
+        font-weight: 700;
+      }
+
+      .policy h3 {
+        margin: 24px 0 8px;
+        font-size: 1.0625rem;
+        font-weight: 600;
+      }
+
+      .policy p,
+      .policy ul {
+        margin: 0 0 16px;
+        max-width: var(--measure);
+        color: var(--ink-2);
+      }
+
+      .policy ul {
+        padding-left: 1.25em;
+      }
+
+      .policy li {
+        margin-bottom: 8px;
+      }
+
+      .policy .note {
+        padding-left: 16px;
+        border-left: 3px solid var(--separator);
+      }
+
+      .policy strong {
+        color: var(--ink);
+        font-weight: 600;
+      }
+
+      .email {
+        overflow-wrap: anywhere;
+      }
+    </style>
   </head>
   <body>
-    <h1>Privacy Policy</h1>
-    <p>Placeholder.</p>
-    <p><a href="../">Home</a></p>
+    <site-header></site-header>
+
+    <main>
+      <section class="policy" aria-labelledby="policy-title">
+        <div class="wrap">
+          <h1 id="policy-title">Privacy Policy</h1>
+          <p class="updated">Last updated October 11, 2026</p>
+
+          <div class="summary">
+            <p>
+              <strong>In short:</strong> POV reframes your videos entirely on
+              your device. Your videos never leave your phone, and we don’t
+              collect, store or share any personal data. There are no accounts,
+              no ads, no analytics and no tracking.
+            </p>
+          </div>
+
+          <p>
+            This policy explains how the POV app (“POV”, “the app”, “we”, “us”)
+            handles your information. POV is made by Miha Vintar, an independent
+            developer. Where something works differently on a particular
+            platform, it’s noted in that section.
+          </p>
+
+          <h2>Your videos</h2>
+          <p>
+            To reframe a video, you pick one from your photo library. POV uses
+            it only to process the video, show its file name on screen and make
+            a thumbnail of it. POV doesn’t look at, change or delete anything
+            else in your library.
+          </p>
+          <p>
+            All processing happens on your device. Your videos are never
+            uploaded to us or to anyone else.
+          </p>
+          <p>
+            The reframed video is saved to a temporary file on your device so
+            you can preview it. It is deleted when you’re done with it, and the
+            system may also clear it at any time. The video goes somewhere else
+            only if you choose to save or share it using the Share button, in
+            which case it is handled by the app or service you pick.
+          </p>
+          <p>
+            The reframed video keeps the original recording date, so it appears
+            in the right place in your library. Other metadata from the
+            original, such as location, is not copied over.
+          </p>
+          <p class="note">
+            <strong>On iPhone:</strong> POV asks for access to your photo
+            library so it can open the video you pick. You can change or revoke
+            this access at any time in the Settings app, or from
+            <strong>Permissions</strong> in the app’s menu.
+          </p>
+
+          <h2>What’s stored on your device</h2>
+          <p>
+            POV stores only two small pieces of information, both on your
+            device:
+          </p>
+          <ul>
+            <li>
+              <strong>How many free reframes you’ve used.</strong> This is a
+              single number.
+            </li>
+            <li>
+              <strong>Whether you’ve bought Unlimited reframes.</strong> This is
+              saved so the app can show the right screen straight away. Your app
+              store always has the final say.
+            </li>
+          </ul>
+          <p>
+            Neither is linked to your identity or sent to us. Depending on your
+            device settings, this information may be included in your device
+            backups.
+          </p>
+          <p class="note">
+            <strong>On iPhone:</strong> the free reframe count is kept in your
+            device’s Keychain, so it isn’t reset if you delete and reinstall the
+            app. Backups, including iCloud backups, are managed by Apple.
+          </p>
+
+          <h2>Purchases</h2>
+          <p>
+            Unlimited reframes is an in-app purchase handled entirely by the app
+            store you got POV from. We don’t receive your name, payment details
+            or account information. The app checks with the store only to find
+            out whether the purchase is active, including when you use
+            <strong>Restore Purchases</strong>.
+          </p>
+          <p class="note">
+            <strong>On iPhone:</strong> purchases go through Apple’s App Store
+            and are covered by the
+            <a href="https://www.apple.com/legal/privacy/"
+              >Apple Privacy Policy</a
+            >.
+          </p>
+
+          <h2>Diagnostics</h2>
+          <p>
+            If you’ve chosen to share diagnostics with app developers in your
+            device settings, your platform provider may give us crash reports
+            and anonymous usage statistics, such as how many people use the app.
+            This information doesn’t identify you, and you can turn it off at
+            any time.
+          </p>
+          <p class="note">
+            <strong>On iPhone:</strong> this is controlled under Settings →
+            Privacy &amp; Security → Analytics &amp; Improvements → Share With
+            App Developers.
+          </p>
+
+          <h2>Contacting us</h2>
+          <p>
+            If you email us for support, we receive your email address and
+            whatever you choose to include in your message, such as screenshots.
+            We use this only to reply to you and to fix problems, and we don’t
+            share it with anyone. You can ask us to delete your messages at any
+            time.
+          </p>
+
+          <h2>This website</h2>
+          <p>
+            This website doesn’t use cookies, analytics or tracking. It is
+            hosted on GitHub Pages and loads its font from Google Fonts. Like
+            any website, these services receive standard technical information
+            such as your IP address when you visit. See the
+            <a
+              href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement"
+              >GitHub Privacy Statement</a
+            >
+            and the
+            <a href="https://policies.google.com/privacy"
+              >Google Privacy Policy</a
+            >.
+          </p>
+
+          <h2>Children</h2>
+          <p>
+            POV doesn’t collect personal information from anyone, including
+            children.
+          </p>
+
+          <h2>Changes to this policy</h2>
+          <p>
+            If POV changes in a way that affects your privacy, we’ll update this
+            page and the date at the top.
+          </p>
+
+          <h2>Contact</h2>
+          <p>
+            Questions about this policy? Write to
+            <a class="email" href="mailto:mihavintar3@gmail.com"
+              >mihavintar3@gmail.com</a
+            >.
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <site-footer></site-footer>
   </body>
 </html>
