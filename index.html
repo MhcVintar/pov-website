@@ -158,7 +158,7 @@
       }
 
       .stage svg,
-      .output svg {
+      .output canvas {
         display: block;
         width: 100%;
         height: 100%;
@@ -511,14 +511,7 @@
 
             <figure class="frame frame--output">
               <div class="output">
-                <svg
-                  id="output"
-                  viewBox="0 0 533.33 300"
-                  preserveAspectRatio="none"
-                  aria-hidden="true"
-                >
-                  <g id="strips"></g>
-                </svg>
+                <canvas id="output" aria-hidden="true"></canvas>
               </div>
               <figcaption>Result</figcaption>
             </figure>
@@ -636,56 +629,59 @@
 
     <script>
       (function () {
-        var SVGNS = "http://www.w3.org/2000/svg";
         var W = 400,
           H = 300;
         var STRIPS = 60;
 
         // The reshaping below tracks the actual app (POV/Pipeline/VideoProcessor.swift
         // and WarpKernels.metal). When the app's transformation changes, update
-        // POV_KEEP, POV_CURVE and warp() to match.
+        // POV_KEEP, POV_CURVE, warp() and target() to match.
 
         // How much of the 4:3 width POV keeps before reshaping. Landscape keeps the whole
-        // frame; portrait crops a centered 3:4 strip at full height.
+        // frame and stretches it wider; portrait crops a centered 3:4 strip at full
+        // height and stretches it taller.
         var POV_KEEP = { landscape: W, portrait: (H * 3) / 4 };
         var OUT_W = { landscape: (H * 16) / 9, portrait: (H * 9) / 16 };
         var CAPTIONS = {
           "pov-landscape": "",
           "pov-portrait":
-            "POV keeps a wider slice of the shot than a plain crop, and squeezes its edges so the middle still looks natural.",
+            "POV keeps a wider slice of the shot than a plain crop, and stretches it taller toward the top and bottom so the middle still looks natural.",
           "crop-landscape":
             "Cropping to landscape cuts off the top and bottom of the shot, including the rider’s hands on the handlebars.",
           "crop-portrait":
             "Cropping to portrait keeps only a narrow strip from the middle of the shot.",
         };
 
-        // How quickly the reshaping ramps up from the middle toward the edges. Lower
-        // values (between 1 and 2) start reshaping closer to the middle and spread it
-        // more evenly; 1 would scale the whole width evenly.
-        var POV_CURVE = { landscape: 2, portrait: 1.5 };
+        // How much of the stretch is pushed out toward the edges. 0 stretches evenly
+        // everywhere; 1 leaves the middle untouched and puts it all at the edges.
+        var POV_CURVE = { landscape: 0.647, portrait: 0.33 };
 
-        // The app's warp kernels, for both landscape and portrait. Takes an output
-        // column t (0–1 across the output) and
-        // returns the column it samples from, 0–1 across the kept part of the frame. `q` is
-        // the output width over the kept width. For curves above 1 the slope is 1 at the
-        // center, so the middle keeps its natural proportions.
+        // The app's warp kernels, for both landscape (across) and portrait (down). Takes
+        // an output position t (0–1 along the stretched axis) and returns the position it
+        // samples from, 0–1 across the kept part of the frame. `q` is the output length
+        // over the kept length along that axis.
         function warp(t, q, curve) {
           var n = t * 2 - 1;
-          var shaped = Math.sign(n) * Math.pow(Math.abs(n), curve);
+          var shaped = n + (n * Math.abs(n) - n) * curve;
           return q * t + ((1 - q) / 2) * (1 + shaped);
         }
 
         var demo = document.querySelector(".demo");
         var output = document.getElementById("output");
-        var stripsG = document.getElementById("strips");
+        var ctx = output.getContext("2d");
+        var pass = document.createElement("canvas");
+        var passCtx = pass.getContext("2d");
+        var image = new Image();
+        image.src = "assets/demo.jpg";
         var crop = document.getElementById("crop");
         var caption = document.getElementById("caption");
         var reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
 
         var settings = { format: "landscape", mode: "pov" };
 
-        // A layout: source column edges S (in the 4:3 frame), destination edges D
-        // (in the output), the vertical source window and the output width.
+        // A layout: source column edges xs and row edges ys (in the 4:3 frame), their
+        // destination edges xd and yd (in the output, which is always H tall), and the
+        // output width.
         function uniform(a, b) {
           var out = [];
           for (var i = 0; i <= STRIPS; i++)
@@ -693,102 +689,141 @@
           return out;
         }
 
+        function warped(start, length, q, curve) {
+          var out = [];
+          for (var i = 0; i <= STRIPS; i++)
+            out.push(start + length * warp(i / STRIPS, q, curve));
+          return out;
+        }
+
         function target(format, mode) {
           var ow = OUT_W[format];
+          var rows = uniform(0, H);
           if (mode === "crop") {
             if (format === "landscape") {
               var sh = (W * 9) / 16;
               return {
-                S: uniform(0, W),
-                D: uniform(0, ow),
-                sy: (H - sh) / 2,
-                sh: sh,
+                xs: uniform(0, W),
+                xd: uniform(0, ow),
+                ys: uniform((H - sh) / 2, (H + sh) / 2),
+                yd: rows,
                 ow: ow,
               };
             }
             return {
-              S: uniform((W - ow) / 2, (W + ow) / 2),
-              D: uniform(0, ow),
-              sy: 0,
-              sh: H,
+              xs: uniform((W - ow) / 2, (W + ow) / 2),
+              xd: uniform(0, ow),
+              ys: rows,
+              yd: rows,
               ow: ow,
             };
           }
           var keep = POV_KEEP[format];
-          var S = [];
-          for (var i = 0; i <= STRIPS; i++) {
-            S.push(
-              (W - keep) / 2 +
-                keep * warp(i / STRIPS, ow / keep, POV_CURVE[format]),
-            );
+          var curve = POV_CURVE[format];
+          if (format === "landscape") {
+            return {
+              xs: warped((W - keep) / 2, keep, ow / keep, curve),
+              xd: uniform(0, ow),
+              ys: rows,
+              yd: rows,
+              ow: ow,
+            };
           }
-          return { S: S, D: uniform(0, ow), sy: 0, sh: H, ow: ow };
+          // The app's portrait output is the kept width by keep * 16/9 tall; q is that
+          // height over the source height.
+          return {
+            xs: uniform((W - keep) / 2, (W + keep) / 2),
+            xd: uniform(0, ow),
+            ys: warped(0, H, (keep * 16) / 9 / H, curve),
+            yd: rows,
+            ow: ow,
+          };
         }
 
         function lerp(a, b, t) {
           return a + (b - a) * t;
         }
 
+        function lerpAll(a, b, t) {
+          var out = [];
+          for (var i = 0; i <= STRIPS; i++) out.push(lerp(a[i], b[i], t));
+          return out;
+        }
+
         function mix(a, b, t) {
-          var S = [],
-            D = [];
-          for (var i = 0; i <= STRIPS; i++) {
-            S.push(lerp(a.S[i], b.S[i], t));
-            D.push(lerp(a.D[i], b.D[i], t));
-          }
           return {
-            S: S,
-            D: D,
-            sy: lerp(a.sy, b.sy, t),
-            sh: lerp(a.sh, b.sh, t),
+            xs: lerpAll(a.xs, b.xs, t),
+            xd: lerpAll(a.xd, b.xd, t),
+            ys: lerpAll(a.ys, b.ys, t),
+            yd: lerpAll(a.yd, b.yd, t),
             ow: lerp(a.ow, b.ow, t),
           };
         }
 
-        // One nested <svg> per strip, each showing a slice of the scene squeezed or stretched
-        // into its destination width. Together they form a piecewise-linear warp.
-        var strips = [];
-        for (var i = 0; i < STRIPS; i++) {
-          var svg = document.createElementNS(SVGNS, "svg");
-          svg.setAttribute("preserveAspectRatio", "none");
-          svg.setAttribute("y", "0");
-          svg.setAttribute("height", H);
-          var use = document.createElementNS(SVGNS, "use");
-          use.setAttribute("href", "#scene");
-          svg.appendChild(use);
-          stripsG.appendChild(svg);
-          strips.push(svg);
-        }
-
+        // Drawn in two passes, like a separable warp: first columns of the photo are
+        // reshaped across into an offscreen canvas, then rows of that are reshaped down
+        // into the visible one. Strip edges are rounded to whole pixels so neighbouring
+        // strips meet without seams.
         function draw(L) {
-          output.setAttribute("viewBox", "0 0 " + L.ow.toFixed(3) + " " + H);
           demo.style.setProperty("--out-ar", (L.ow / H).toFixed(4));
 
-          for (var i = 0; i < STRIPS; i++) {
-            var sw = L.S[i + 1] - L.S[i];
-            var dw = L.D[i + 1] - L.D[i];
-            // Overlap neighbours slightly so anti-aliased edges don't show as seams.
-            var s = strips[i];
-            s.setAttribute("x", L.D[i].toFixed(3));
-            s.setAttribute("width", (dw + 0.6).toFixed(3));
-            s.setAttribute(
-              "viewBox",
-              L.S[i].toFixed(3) +
-                " " +
-                L.sy.toFixed(3) +
-                " " +
-                (sw + (0.6 * sw) / dw).toFixed(3) +
-                " " +
-                L.sh.toFixed(3),
-            );
+          var last = STRIPS;
+          var cw = L.xs[last] - L.xs[0];
+          var ch = L.ys[last] - L.ys[0];
+          crop.style.left = (L.xs[0] / W) * 100 + "%";
+          crop.style.top = (L.ys[0] / H) * 100 + "%";
+          crop.style.width = (cw / W) * 100 + "%";
+          crop.style.height = (ch / H) * 100 + "%";
+          crop.style.opacity = cw * ch > W * H * 0.995 ? 0 : 1;
+
+          if (!image.complete || !image.naturalWidth) return;
+
+          var ph = Math.max(
+            1,
+            Math.round(output.clientHeight * (window.devicePixelRatio || 1)),
+          );
+          var pw = Math.max(1, Math.round((ph * L.ow) / H));
+          if (output.width !== pw || output.height !== ph) {
+            output.width = pass.width = pw;
+            output.height = pass.height = ph;
+          }
+          ctx.imageSmoothingQuality = passCtx.imageSmoothingQuality = "high";
+
+          var px = ph / H;
+          var ix = image.naturalWidth / W;
+          var i, d0, d1, s0, s1;
+
+          passCtx.clearRect(0, 0, pw, ph);
+          for (i = 0; i < STRIPS; i++) {
+            d0 = Math.round(L.xd[i] * px);
+            d1 = Math.round(L.xd[i + 1] * px);
+            s0 = L.xs[i] * ix;
+            s1 = L.xs[i + 1] * ix;
+            if (d1 > d0 && s1 > s0) {
+              passCtx.drawImage(
+                image,
+                s0,
+                0,
+                s1 - s0,
+                image.naturalHeight,
+                d0,
+                0,
+                d1 - d0,
+                ph,
+              );
+            }
           }
 
-          var cw = L.S[STRIPS] - L.S[0];
-          crop.style.left = (L.S[0] / W) * 100 + "%";
-          crop.style.top = (L.sy / H) * 100 + "%";
-          crop.style.width = (cw / W) * 100 + "%";
-          crop.style.height = (L.sh / H) * 100 + "%";
-          crop.style.opacity = cw * L.sh > W * H * 0.995 ? 0 : 1;
+          ctx.clearRect(0, 0, pw, ph);
+          for (i = 0; i < STRIPS; i++) {
+            d0 = Math.round(L.yd[i] * px);
+            d1 = Math.round(L.yd[i + 1] * px);
+            s0 = L.ys[i] * px;
+            s1 = L.ys[i + 1] * px;
+            if (d1 > d0 && s1 > s0) {
+              ctx.drawImage(pass, 0, s0, pw, s1 - s0, 0, d0, pw, d1 - d0);
+            }
+          }
         }
 
         var current = target(settings.format, settings.mode);
@@ -834,6 +869,13 @@
             go();
           });
         });
+
+        image.addEventListener("load", function () {
+          draw(current);
+        });
+        new ResizeObserver(function () {
+          draw(current);
+        }).observe(output);
 
         draw(current);
         go();
